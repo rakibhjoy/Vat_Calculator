@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAT Calculator Bangladesh - Professional Tax Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 25%, #047857 50%, #059669 75%, #0d9488 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        .gradient-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.4;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35),
+                        0 0 100px rgba(16, 185, 129, 0.15);
+        }
+        
+        .premium-shadow {
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3),
+                        0 0 0 1px rgba(255, 255, 255, 0.1),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        
+        .input-premium {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #ffffff;
+            color: #1f2937;
+        }
+        
+        .input-premium:focus {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3),
+                        0 0 0 4px rgba(16, 185, 129, 0.1);
+            background: #ffffff;
+        }
+        
+        .input-premium::placeholder {
+            color: #9ca3af;
+        }
+        
+        .btn-premium {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
+        }
+        
+        .btn-premium::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn-premium:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-premium:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(5, 150, 105, 0.5);
+        }
+        
+        .btn-premium:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+        
+        .result-card {
+            animation: slideInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: bottom;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(16, 185, 129, 0.6);
+            }
+        }
+        
+        .error-shake {
+            animation: shake 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+        
+        .stat-badge {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-badge:hover {
+            transform: translateY(-5px);
+            border-color: rgba(16, 185, 129, 0.6);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            background: rgba(255, 255, 255, 1);
+        }
+        
+        .bd-flag {
+            background: linear-gradient(90deg, #006a4e 60%, transparent 60%),
+                        radial-gradient(circle at 35% 50%, #f42a41 25%, transparent 25%);
+            width: 40px;
+            height: 24px;
+            border-radius: 3px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            display: inline-block;
+        }
+        
+        .loading-spinner {
+            border: 3px solid rgba(16, 185, 129, 0.1);
+            border-top-color: #10b981;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .quick-vat-btn {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            color: #047857;
+            font-weight: 600;
+        }
+        
+        .quick-vat-btn:hover {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+            border-color: transparent;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen py-6 px-4 sm:px-6 lg:px-8 relative">
+    <div class="max-w-6xl mx-auto relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-8 fade-in">
+            <div class="flex justify-center items-center gap-3 mb-4">
+                <div class="bd-flag"></div>
+                <h1 class="text-4xl sm:text-6xl font-bold text-white drop-shadow-2xl" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.4);">
+                    <i class="fas fa-calculator mr-3"></i>VAT Calculator
+                </h1>
+                <div class="bd-flag"></div>
+            </div>
+            <p class="text-white text-lg sm:text-xl font-semibold drop-shadow-lg" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.3);">
+                Bangladesh VAT & Tax Calculator | মূল্য সংযোজন কর ক্যালকুলেটর
+            </p>
+            <p class="text-green-50 text-sm mt-2 font-medium" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
+                <i class="fas fa-shield-alt mr-2"></i>Compliant with Bangladesh VAT Act 2012
+            </p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 fade-in">
+            <div class="stat-badge rounded-xl p-4 text-center glass-card">
+                <div class="text-green-600 text-3xl font-bold">15%</div>
+                <div class="text-gray-600 text-sm font-semibold mt-1">Standard VAT Rate</div>
+                <div class="text-gray-500 text-xs">Most Goods & Services</div>
+            </div>
+            <div class="stat-badge rounded-xl p-4 text-center glass-card">
+                <div class="text-green-600 text-3xl font-bold">5%</div>
+                <div class="text-gray-600 text-sm font-semibold mt-1">Reduced VAT Rate</div>
+                <div class="text-gray-500 text-xs">Essential Items</div>
+            </div>
+            <div class="stat-badge rounded-xl p-4 text-center glass-card">
+                <div class="text-green-600 text-3xl font-bold">7.5%</div>
+                <div class="text-gray-600 text-sm font-semibold mt-1">Telecom Services</div>
+                <div class="text-gray-500 text-xs">Mobile & Internet</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Main Calculator Card -->
+            <div class="lg:col-span-2">
+                <div class="glass-card rounded-3xl premium-shadow overflow-hidden">
+                    <!-- Card Header -->
+                    <div class="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 px-6 sm:px-8 py-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
+                                    <i class="fas fa-chart-line"></i>
+                                    Calculate VAT
+                                </h2>
+                                <p class="text-green-50 text-sm mt-2">
+                                    <i class="far fa-lightbulb mr-1"></i>Choose calculation type and enter values
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-6 sm:p-8">
+                        <!-- Calculation Type Selector -->
+                        <div class="mb-6">
+                            <label for="calculationType" class="block text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                                <i class="fas fa-tasks text-green-600"></i>
+                                Calculation Type | গণনার ধরন
+                            </label>
+                            <select 
+                                id="calculationType" 
+                                class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-green-500 focus:ring-opacity-30 focus:border-green-500 transition-all duration-200 input-premium outline-none font-semibold text-gray-700"
+                                onchange="handleCalculationTypeChange()"
+                            >
+                                <option value="add"><i class="fas fa-plus-circle"></i> Add VAT to Price | মূল্যে ভ্যাট যোগ করুন</option>
+                                <option value="remove"><i class="fas fa-minus-circle"></i> Remove VAT from Total | মোট থেকে ভ্যাট বাদ দিন</option>
+                                <option value="amount"><i class="fas fa-percentage"></i> Calculate VAT Amount Only | শুধু ভ্যাট পরিমাণ হিসাব করুন</option>
+                            </select>
+                        </div>
+
+                        <!-- Quick VAT Buttons -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                                <i class="fas fa-bolt text-yellow-500"></i>
+                                Quick VAT Rates | দ্রুত ভ্যাট হার
+                            </label>
+                            <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                                <button onclick="setVAT(5)" class="quick-vat-btn rounded-lg py-2 px-3 text-sm font-semibold text-green-700">5%</button>
+                                <button onclick="setVAT(7.5)" class="quick-vat-btn rounded-lg py-2 px-3 text-sm font-semibold text-green-700">7.5%</button>
+                                <button onclick="setVAT(10)" class="quick-vat-btn rounded-lg py-2 px-3 text-sm font-semibold text-green-700">10%</button>
+                                <button onclick="setVAT(15)" class="quick-vat-btn rounded-lg py-2 px-3 text-sm font-semibold text-green-700">15%</button>
+                                <button onclick="setVAT(20)" class="quick-vat-btn rounded-lg py-2 px-3 text-sm font-semibold text-green-700">20%</button>
+                                <button onclick="setVAT(25)" class="quick-vat-btn rounded-lg py-2 px-3 text-sm font-semibold text-green-700">25%</button>
+                            </div>
+                        </div>
+
+                        <!-- Input Fields -->
+                        <div class="space-y-6">
+                            <!-- Price Input -->
+                            <div>
+                                <label for="priceInput" id="priceLabel" class="block text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-money-bill-wave text-green-600"></i>
+                                    Base Price (৳ BDT)
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold text-lg">৳</span>
+                                    <input 
+                                        type="number" 
+                                        id="priceInput" 
+                                        placeholder="Enter amount in Taka" 
+                                        class="w-full pl-12 pr-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-green-500 focus:ring-opacity-30 focus:border-green-500 transition-all duration-200 input-premium outline-none text-lg font-semibold text-gray-700"
+                                        step="0.01"
+                                        min="0"
+                                    >
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2 ml-1" id="priceHint">
+                                    <i class="fas fa-info-circle mr-1"></i>Enter the base price without VAT
+                                </p>
+                            </div>
+
+                            <!-- VAT Percentage Input -->
+                            <div>
+                                <label for="vatPercentage" class="block text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                                    <i class="fas fa-percent text-green-600"></i>
+                                    VAT Percentage | ভ্যাটের শতাংশ
+                                </label>
+                                <div class="relative">
+                                    <input 
+                                        type="number" 
+                                        id="vatPercentage" 
+                                        placeholder="e.g., 5, 7.5, 15" 
+                                        class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-green-500 focus:ring-opacity-30 focus:border-green-500 transition-all duration-200 input-premium outline-none text-lg font-semibold text-gray-700"
+                                        step="0.01"
+                                        min="0"
+                                        max="100"
+                                        value="15"
+                                    >
+                                    <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold text-lg">%</span>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2 ml-1">
+                                    <i class="fas fa-tag mr-1"></i>Bangladesh rates: 5% (Essential), 7.5% (Telecom), 15% (Standard)
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div id="errorMessage" class="hidden mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-xl glass-card">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-exclamation-triangle text-red-500 text-xl"></i>
+                                <p class="text-red-700 text-sm font-semibold" id="errorText"></p>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                            <button 
+                                onclick="calculateVAT()" 
+                                class="flex-1 btn-premium bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white font-bold py-4 px-8 rounded-xl relative z-10 text-lg"
+                            >
+                                <i class="fas fa-calculator mr-2"></i>Calculate Now
+                            </button>
+                            <button 
+                                onclick="resetForm()" 
+                                class="sm:flex-initial bg-gradient-to-br from-gray-100 to-gray-200 text-gray-700 font-bold py-4 px-8 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all duration-200 hover:scale-105"
+                            >
+                                <i class="fas fa-redo-alt mr-2"></i>Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Bangladesh VAT Info -->
+                <div class="glass-card rounded-3xl premium-shadow overflow-hidden">
+                    <div class="bg-gradient-to-br from-green-600 to-emerald-700 px-5 py-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-info-circle"></i>
+                            BD VAT Rates
+                        </h3>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-700 text-sm">Standard: 15%</div>
+                                <div class="text-gray-500 text-xs">Most goods & services</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-phone text-blue-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-700 text-sm">Telecom: 7.5%</div>
+                                <div class="text-gray-500 text-xs">Mobile & internet services</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-shopping-basket text-yellow-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-700 text-sm">Reduced: 5%</div>
+                                <div class="text-gray-500 text-xs">Essential items & food</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-ban text-red-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-700 text-sm">Zero-rated: 0%</div>
+                                <div class="text-gray-500 text-xs">Exports & specific items</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How to Use -->
+                <div class="glass-card rounded-3xl premium-shadow overflow-hidden">
+                    <div class="bg-gradient-to-br from-teal-600 to-cyan-700 px-5 py-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-question-circle"></i>
+                            How to Use
+                        </h3>
+                    </div>
+                    <div class="p-5 space-y-3 text-sm">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">1.</span>
+                            <p class="text-gray-600">Select calculation type from dropdown</p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">2.</span>
+                            <p class="text-gray-600">Enter amount in Bangladeshi Taka (৳)</p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">3.</span>
+                            <p class="text-gray-600">Choose VAT rate or use quick buttons</p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-600 font-bold">4.</span>
+                            <p class="text-gray-600">Click "Calculate" to see results</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div id="resultsCard" class="hidden mt-6 glass-card rounded-3xl premium-shadow overflow-hidden result-card pulse-glow">
+            <div class="bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 px-6 sm:px-8 py-5">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <i class="fas fa-chart-pie"></i>
+                    Calculation Results | গণনার ফলাফল
+                </h3>
+            </div>
+            <div class="p-6 sm:p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="result1" class="p-5 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border-2 border-green-200 hover:border-green-400 transition-all">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-gray-600 text-sm font-semibold mb-1" id="result1Label"></div>
+                                <div class="text-3xl font-bold text-green-700" id="result1Value"></div>
+                            </div>
+                            <div class="w-12 h-12 bg-green-200 rounded-full flex items-center justify-center">
+                                <i class="fas fa-money-bill text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="result2" class="p-5 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl border-2 border-teal-200 hover:border-teal-400 transition-all">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-gray-600 text-sm font-semibold mb-1" id="result2Label"></div>
+                                <div class="text-3xl font-bold text-teal-700" id="result2Value"></div>
+                            </div>
+                            <div class="w-12 h-12 bg-teal-200 rounded-full flex items-center justify-center">
+                                <i class="fas fa-percentage text-teal-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="result3" class="hidden mt-4 p-6 bg-gradient-to-r from-emerald-100 via-green-100 to-teal-100 rounded-xl border-3 border-green-300 hover:border-green-500 transition-all">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-gray-700 font-bold text-base mb-2" id="result3Label"></div>
+                            <div class="text-4xl font-extrabold text-green-700" id="result3Value"></div>
+                        </div>
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+                            <i class="fas fa-receipt text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Breakdown Section -->
+                <div id="breakdownSection" class="mt-6 p-5 bg-white rounded-xl border-2 border-gray-200 shadow-sm">
+                    <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                        <i class="fas fa-list-ul text-green-600"></i>
+                        Detailed Breakdown
+                    </h4>
+                    <div id="breakdownContent" class="space-y-2 text-sm"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-card rounded-2xl p-6 border-2 border-white border-opacity-30">
+                <h4 class="font-bold text-gray-800 text-lg mb-3 flex items-center gap-2">
+                    <i class="fas fa-landmark text-green-600"></i>
+                    Legal Information
+                </h4>
+                <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                        <span>Governed by VAT Act 2012 (Bangladesh)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                        <span>Administered by National Board of Revenue (NBR)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                        <span>Registration required for annual turnover > ৳30 lakh</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="glass-card rounded-2xl p-6 border-2 border-white border-opacity-30">
+                <h4 class="font-bold text-gray-800 text-lg mb-3 flex items-center gap-2">
+                    <i class="fas fa-calculator text-blue-600"></i>
+                    Calculator Features
+                </h4>
+                <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-star text-amber-500 mt-1"></i>
+                        <span>Accurate calculations with BD VAT rules</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-star text-amber-500 mt-1"></i>
+                        <span>Support for all VAT rates in Bangladesh</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-star text-amber-500 mt-1"></i>
+                        <span>Mobile-friendly responsive design</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 glass-card rounded-2xl p-6">
+            <p class="text-gray-700 font-semibold text-sm mb-2">
+                <i class="fas fa-shield-alt text-green-600 mr-2"></i>
+                Professional VAT Calculator for Bangladesh
+            </p>
+            <p class="text-gray-600 text-xs">
+                © 2026 BD VAT Calculator | বাংলাদেশ ভ্যাট ক্যালকুলেটর | For informational purposes only
+            </p>
+            <p class="text-gray-500 text-xs mt-2">
+                Always consult with a tax professional for official tax matters
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Set VAT percentage from quick buttons
+        function setVAT(rate) {
+            document.getElementById('vatPercentage').value = rate;
+            const btn = event.target;
+            btn.classList.add('scale-110');
+            setTimeout(() => btn.classList.remove('scale-110'), 200);
+        }
+
+        // Handle calculation type change
+        function handleCalculationTypeChange() {
+            const type = document.getElementById('calculationType').value;
+            const priceLabel = document.getElementById('priceLabel');
+            const priceHint = document.getElementById('priceHint');
+            const priceInput = document.getElementById('priceInput');
+            
+            // Hide results and errors when changing type
+            hideResults();
+            hideError();
+            
+            // Update labels based on calculation type
+            switch(type) {
+                case 'add':
+                    priceLabel.innerHTML = '<i class="fas fa-money-bill-wave text-green-600"></i> Base Price (৳ BDT)';
+                    priceHint.innerHTML = '<i class="fas fa-info-circle mr-1"></i>Enter the base price without VAT';
+                    priceInput.placeholder = 'Enter base amount in Taka';
+                    break;
+                case 'remove':
+                    priceLabel.innerHTML = '<i class="fas fa-money-bill-wave text-green-600"></i> Total Price - VAT Included (৳ BDT)';
+                    priceHint.innerHTML = '<i class="fas fa-info-circle mr-1"></i>Enter the total price including VAT';
+                    priceInput.placeholder = 'Enter total amount with VAT';
+                    break;
+                case 'amount':
+                    priceLabel.innerHTML = '<i class="fas fa-money-bill-wave text-green-600"></i> Price (৳ BDT)';
+                    priceHint.innerHTML = '<i class="fas fa-info-circle mr-1"></i>Enter any price to calculate VAT amount';
+                    priceInput.placeholder = 'Enter amount in Taka';
+                    break;
+            }
+        }
+
+        // Validate inputs
+        function validateInputs(price, vatRate) {
+            if (price === '' || price === null) {
+                showError('❌ Please enter a price amount | দয়া করে মূল্য লিখুন');
+                return false;
+            }
+            
+            if (vatRate === '' || vatRate === null) {
+                showError('❌ Please enter a VAT percentage | দয়া করে ভ্যাট শতাংশ লিখুন');
+                return false;
+            }
+            
+            const priceNum = parseFloat(price);
+            const vatNum = parseFloat(vatRate);
+            
+            if (isNaN(priceNum) || priceNum < 0) {
+                showError('❌ Price must be a positive number | মূল্য একটি ধনাত্মক সংখ্যা হতে হবে');
+                return false;
+            }
+            
+            if (priceNum === 0) {
+                showError('❌ Price cannot be zero | মূল্য শূন্য হতে পারে না');
+                return false;
+            }
+            
+            if (isNaN(vatNum) || vatNum < 0 || vatNum > 100) {
+                showError('❌ VAT percentage must be between 0 and 100 | ভ্যাট শতাংশ ০ থেকে ১০০ এর মধ্যে হতে হবে');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.innerHTML = message;
+            errorDiv.classList.remove('hidden');
+            errorDiv.classList.add('error-shake');
+            
+            setTimeout(() => {
+                errorDiv.classList.remove('error-shake');
+            }, 400);
+        }
+
+        // Hide error message
+        function hideError() {
+            document.getElementById('errorMessage').classList.add('hidden');
+        }
+
+        // Show results
+        function showResults() {
+            const resultsCard = document.getElementById('resultsCard');
+            resultsCard.classList.remove('hidden');
+            setTimeout(() => {
+                resultsCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        // Hide results
+        function hideResults() {
+            document.getElementById('resultsCard').classList.add('hidden');
+        }
+
+        // Format currency in Bangladeshi Taka
+        function formatCurrency(amount) {
+            const formatted = parseFloat(amount).toFixed(2);
+            // Add thousand separators
+            return '৳ ' + formatted.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Format number with commas
+        function formatNumber(num) {
+            return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Calculate VAT - Main function
+        function calculateVAT() {
+            hideError();
+            
+            const price = document.getElementById('priceInput').value;
+            const vatRate = document.getElementById('vatPercentage').value;
+            const calculationType = document.getElementById('calculationType').value;
+            
+            // Validate inputs
+            if (!validateInputs(price, vatRate)) {
+                return;
+            }
+            
+            const priceNum = parseFloat(price);
+            const vatRateNum = parseFloat(vatRate);
+            
+            // Perform calculation based on type
+            switch(calculationType) {
+                case 'add':
+                    addVAT(priceNum, vatRateNum);
+                    break;
+                case 'remove':
+                    removeVAT(priceNum, vatRateNum);
+                    break;
+                case 'amount':
+                    calculateVATAmount(priceNum, vatRateNum);
+                    break;
+            }
+        }
+
+        // Create breakdown content
+        function createBreakdown(items) {
+            const breakdownContent = document.getElementById('breakdownContent');
+            breakdownContent.innerHTML = '';
+            
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center py-2 border-b border-gray-200 last:border-0';
+                div.innerHTML = `
+                    <span class="text-gray-600">${item.label}</span>
+                    <span class="font-semibold text-gray-800">${item.value}</span>
+                `;
+                breakdownContent.appendChild(div);
+            });
+        }
+
+        // Add VAT to Price
+        function addVAT(basePrice, vatRate) {
+            const vatAmount = basePrice * (vatRate / 100);
+            const totalPrice = basePrice + vatAmount;
+            
+            document.getElementById('result1Label').innerHTML = '<i class="fas fa-tag mr-2"></i>Base Price:';
+            document.getElementById('result1Value').textContent = formatCurrency(basePrice);
+            
+            document.getElementById('result2Label').innerHTML = '<i class="fas fa-percentage mr-2"></i>VAT Amount (' + vatRate + '%):';
+            document.getElementById('result2Value').textContent = formatCurrency(vatAmount);
+            
+            document.getElementById('result3').classList.remove('hidden');
+            document.getElementById('result3Label').innerHTML = '<i class="fas fa-receipt mr-2"></i>Total Price (with VAT):';
+            document.getElementById('result3Value').textContent = formatCurrency(totalPrice);
+            
+            // Create breakdown
+            createBreakdown([
+                { label: 'Original Price', value: formatCurrency(basePrice) },
+                { label: `VAT Rate Applied`, value: vatRate + '%' },
+                { label: 'VAT Calculation', value: `৳${formatNumber(basePrice)} × ${vatRate}% = ${formatCurrency(vatAmount)}` },
+                { label: 'Total Payable', value: formatCurrency(totalPrice) }
+            ]);
+            
+            showResults();
+        }
+
+        // Remove VAT from Total Price
+        function removeVAT(totalPrice, vatRate) {
+            const basePrice = totalPrice / (1 + (vatRate / 100));
+            const vatAmount = totalPrice - basePrice;
+            
+            document.getElementById('result1Label').innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Total Price (with VAT):';
+            document.getElementById('result1Value').textContent = formatCurrency(totalPrice);
+            
+            document.getElementById('result2Label').innerHTML = '<i class="fas fa-percentage mr-2"></i>VAT Amount (' + vatRate + '%):';
+            document.getElementById('result2Value').textContent = formatCurrency(vatAmount);
+            
+            document.getElementById('result3').classList.remove('hidden');
+            document.getElementById('result3Label').innerHTML = '<i class="fas fa-coins mr-2"></i>Base Price (without VAT):';
+            document.getElementById('result3Value').textContent = formatCurrency(basePrice);
+            
+            // Create breakdown
+            createBreakdown([
+                { label: 'Total Price (VAT included)', value: formatCurrency(totalPrice) },
+                { label: `VAT Rate`, value: vatRate + '%' },
+                { label: 'VAT Formula', value: `৳${formatNumber(totalPrice)} ÷ ${(1 + vatRate/100).toFixed(4)}` },
+                { label: 'Base Price Extracted', value: formatCurrency(basePrice) },
+                { label: 'VAT Amount', value: formatCurrency(vatAmount) }
+            ]);
+            
+            showResults();
+        }
+
+        // Calculate VAT Amount Only
+        function calculateVATAmount(price, vatRate) {
+            const vatAmount = price * (vatRate / 100);
+            
+            document.getElementById('result1Label').innerHTML = '<i class="fas fa-money-bill mr-2"></i>Price:';
+            document.getElementById('result1Value').textContent = formatCurrency(price);
+            
+            document.getElementById('result2Label').innerHTML = '<i class="fas fa-chart-line mr-2"></i>VAT Rate:';
+            document.getElementById('result2Value').textContent = vatRate + '%';
+            
+            document.getElementById('result3').classList.remove('hidden');
+            document.getElementById('result3Label').innerHTML = '<i class="fas fa-hand-holding-usd mr-2"></i>VAT Amount:';
+            document.getElementById('result3Value').textContent = formatCurrency(vatAmount);
+            
+            // Create breakdown
+            createBreakdown([
+                { label: 'Original Price', value: formatCurrency(price) },
+                { label: `VAT Rate`, value: vatRate + '%' },
+                { label: 'VAT Calculation', value: `৳${formatNumber(price)} × ${vatRate}%` },
+                { label: 'VAT Amount', value: formatCurrency(vatAmount) },
+                { label: 'Price with VAT would be', value: formatCurrency(price + vatAmount) }
+            ]);
+            
+            showResults();
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('priceInput').value = '';
+            document.getElementById('vatPercentage').value = '15';
+            document.getElementById('calculationType').value = 'add';
+            hideResults();
+            hideError();
+            handleCalculationTypeChange();
+            
+            // Add animation
+            const form = document.querySelector('.glass-card');
+            form.classList.add('fade-in');
+            setTimeout(() => form.classList.remove('fade-in'), 600);
+        }
+
+        // Allow Enter key to trigger calculation
+        document.getElementById('priceInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateVAT();
+            }
+        });
+
+        document.getElementById('vatPercentage').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateVAT();
+            }
+        });
+
+        // Format input on blur for better UX
+        document.getElementById('priceInput').addEventListener('blur', function() {
+            if (this.value) {
+                const value = parseFloat(this.value);
+                if (!isNaN(value) && value >= 0) {
+                    this.value = value.toFixed(2);
+                }
+            }
+        });
+
+        document.getElementById('vatPercentage').addEventListener('blur', function() {
+            if (this.value) {
+                const value = parseFloat(this.value);
+                if (!isNaN(value) && value >= 0 && value <= 100) {
+                    this.value = value.toFixed(2);
+                }
+            }
+        });
+
+        // Auto-focus on price input when page loads
+        window.addEventListener('load', function() {
+            document.getElementById('priceInput').focus();
+        });
+    </script>
+</body>
+</html>
